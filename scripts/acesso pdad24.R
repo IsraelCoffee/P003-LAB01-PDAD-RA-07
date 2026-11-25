@@ -10,14 +10,14 @@ library(readr)
 
 # 2. Preparação das bases ---------------------------------------------------
 
-unzip("bases de dados/Base de moradores.zip", exdir = "bases de dados")
-unzip("bases de dados/Base de domicílios.zip", exdir = "bases de dados")
+unzip("base de dados/Base de moradores.zip", exdir = "base de dados")
+unzip("base de dados/Base de domicílios.zip", exdir = "base de dados")
 
 # 3. Importação -------------------------------------------------------------
 
 # Os arquivos usam ";" como separador, por isso read_csv2()
-moradores  <- read_csv2("bases de dados/moradores.csv")    # uma linha por morador
-domicilios <- read_csv2("bases de dados/domicilios.csv")   # uma linha por domicílio
+moradores  <- read_csv2("base de dados/moradores.csv")    # uma linha por morador
+domicilios <- read_csv2("base de dados/domicilios.csv")   # uma linha por domicílio
 
 
 # 4. Junção de domicílios e moradores ---------------------------------------
