@@ -1,11 +1,13 @@
-# Obetivo: Encotrar RAs que são pares(comparaveis) a RA Paranoá.
-# Para isso, precisa satifazer 2 topicos:
-# i) Presisa está no mesmo grupo de renda;
-# ii) Ter uma quantidade de população proxima ou igual.
+# Objetivo: Encontrar RAs que são pares (comparáveis) à RA Paranoá.
+# Para isso, precisa satisfazer 2 tópicos:
+# i) Precisa estar no mesmo grupo de renda;
+# ii) Ter uma quantidade de população próxima ou igual.
 
 
 # Grupo de renda ----
 
+# Este bloco serve de conferência: lista as RAs de baixa renda a partir
+# dos dados. O resultado é comparado com o cod_baixa mais abaixo.
 RAs <- amostra_mor |> 
   filter(A01uf == 53) |> 
   mutate(
@@ -65,17 +67,49 @@ RAs <- amostra_mor |>
   summarise() |> 
   pull(localidade)
 
-print(RAs)
 
+# População ----
 
+# Códigos de localidade das 13 RAs de baixa renda
+cod_baixa <- c("Água Quente" = 5335, "Arapoanga" = 5334, "Brazlândia" = 5304,
+               "Fercal" = 5331, "Itapoã" = 5328, "Paranoá" = 5307,
+               "Planaltina" = 5306, "Recanto das Emas" = 5315,
+               "Riacho Fundo II" = 5321, "São Sebastião" = 5314,
+               "SCIA" = 5325, "Sol Nascente / Pôr do Sol" = 5332,
+               "Varjão" = 5323)
 
+# Conferência: o cod_baixa precisa ter as mesmas RAs do bloco acima.
+# Se os dados mudarem e as listas divergirem, o script para aqui com um erro.
+stopifnot(setequal(as.character(RAs), names(cod_baixa)))
 
+# População estimada por RA
+pop_ras <- amostra_mor |>
+  filter(A01uf == 53, localidade %in% cod_baixa) |>
+  group_by(localidade) |>
+  summarise(
+    populacao = survey_total(vartype = "ci"),   # soma de peso_mor, com IC
+    n_amostra = unweighted(n())                 # quantos moradores entrevistados
+  ) |>
+  mutate(RA = names(cod_baixa)[match(localidade, cod_baixa)]) |>
+  mutate(
+    populacao = round(populacao),
+    populacao_low = round(populacao_low),
+    populacao_upp = round(populacao_upp)
+  ) |> 
+  arrange(desc(populacao))
 
+# Puxa a população do Paranoá
+pop_paranoa <- pop_ras$populacao[pop_ras$localidade == 5307]
 
+# Calcula a razão em relação à população do Paranoá
+pop_ras <- pop_ras |>
+  mutate(razao = populacao / pop_paranoa) |>   # 1 = mesma população do Paranoá
+  arrange(abs(razao - 1))
 
+# Critério: população entre 75% e 130% da população do Paranoá
+faixa_pop <- c(0.75, 1.30)
 
-
-
-
-
-
+# Filtra as RAs dentro da faixa (inclui o próprio Paranoá)
+ras_filtr <- pop_ras |> 
+  filter(between(razao, faixa_pop[1], faixa_pop[2])) |> 
+  select(RA, localidade, populacao)
