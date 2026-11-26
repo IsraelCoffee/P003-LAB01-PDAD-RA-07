@@ -272,8 +272,36 @@ amostra_paranoa_mor |>
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
 
-# Posição na ocupação ----
+# Regime de trabalho ----
 # Só ocupados: quem trabalhou nos últimos 30 dias (I04 == 1)
+
+amostra_paranoa_mor |> 
+  filter(I04 == 1) |> 
+  mutate(
+    regime_trabalho = factor(
+      case_when(
+        I07 == 1     ~ "Presencial",
+        I07 == 2     ~ "Teletrabalho/remoto",
+        I07 == 3     ~ "Híbrido",
+        I07 == 88888 ~ "Não sabe",
+        I07 == 99999 ~ "Não se aplica"
+      )
+    )
+  ) |> 
+  group_by(regime_trabalho) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Posição na ocupação ----
+# Só ocupados
 
 amostra_paranoa_mor |> 
   filter(I04 == 1) |> 
@@ -307,98 +335,22 @@ amostra_paranoa_mor |>
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
 
-# Local do trabalho principal ----
-# Só ocupados. O 0 ("na RA") e o 7 ("Paranoá") são o mesmo lugar para quem mora no Paranoá
-
-amostra_paranoa_mor |> 
-  filter(I04 == 1) |> 
-  mutate(
-    local_trabalho = factor(
-      case_when(
-        I08 %in% c(0, 7)          ~ "No Paranoá",
-        I08 == 1                  ~ "Plano Piloto",
-        I08 %in% c(2:6, 8:35)     ~ "Outras RAs do DF",
-        I08 %in% 41:55            ~ "Goiás",
-        I08 == 56                 ~ "No domicílio",
-        I08 %in% c(40, 57, 58)    ~ "Outros ou vários locais",
-        I08 == 88888              ~ "Não sabe",
-        I08 == 99999              ~ "Não se aplica"
-      )
-    )
-  ) |> 
-  group_by(local_trabalho) |> 
-  summarise(
-    total = survey_total(vartype = "cv"),
-    pct = survey_prop(vartype = "cv")
-  ) |> 
-  mutate(
-    total    = round(total),
-    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
-    pct      = paste0(round(pct * 100, digits = 2), "%"),
-    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
-  )
-
-# Meio de transporte mais utilizado ----
+# Possui CTPS assinada ----
 # Só ocupados
 
 amostra_paranoa_mor |> 
   filter(I04 == 1) |> 
   mutate(
-    transporte = factor(
+    ctps = factor(
       case_when(
-        I09_9 == 1     ~ "Ônibus",
-        I09_9 == 2     ~ "Automóvel",
-        I09_9 == 3     ~ "Transporte privado",
-        I09_9 == 4     ~ "Metrô",
-        I09_9 == 5     ~ "Motocicleta",
-        I09_9 == 6     ~ "Bicicleta",
-        I09_9 == 7     ~ "A pé",
-        I09_9 == 8     ~ "Carroça ou cavalo",
-        I09_9 == 88888 ~ "Não sabe",
-        I09_9 == 99999 ~ "Não se aplica"
+        I18 == 1     ~ "Sim",
+        I18 == 2     ~ "Não",
+        I18 == 88888 ~ "Não sabe",
+        I18 == 99999 ~ "Não se aplica"
       )
     )
   ) |> 
-  group_by(transporte) |> 
-  summarise(
-    total = survey_total(vartype = "cv"),
-    pct = survey_prop(vartype = "cv")
-  ) |> 
-  mutate(
-    total    = round(total),
-    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
-    pct      = paste0(round(pct * 100, digits = 2), "%"),
-    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
-  )
-
-# Tempo de deslocamento até o trabalho ----
-# Só ocupados. Os levels mantêm a ordem do tempo (sem eles, o R ordena por ordem alfabética)
-
-amostra_paranoa_mor |> 
-  filter(I04 == 1) |> 
-  mutate(
-    tempo_desloc = factor(
-      case_when(
-        I10 == 1     ~ "Até 15 min",
-        I10 == 2     ~ "15 a 30 min",
-        I10 == 3     ~ "30 a 45 min",
-        I10 == 4     ~ "45 min a 1h",
-        I10 == 5     ~ "1h a 1h15",
-        I10 == 6     ~ "1h15 a 1h30",
-        I10 == 7     ~ "1h30 a 1h45",
-        I10 == 8     ~ "1h45 a 2h",
-        I10 == 9     ~ "Mais de 2h",
-        I10 == 88888 ~ "Não sabe",
-        I10 == 99999 ~ "Não se aplica"
-      ),
-      levels = c(
-        "Até 15 min", "15 a 30 min", "30 a 45 min", "45 min a 1h",
-        "1h a 1h15", "1h15 a 1h30", "1h30 a 1h45", "1h45 a 2h",
-        "Mais de 2h", "Não sabe", "Não se aplica"
-      )
-    )
-  ) |> 
-  group_by(tempo_desloc) |> 
+  group_by(ctps) |> 
   summarise(
     total = survey_total(vartype = "cv"),
     pct = survey_prop(vartype = "cv")
