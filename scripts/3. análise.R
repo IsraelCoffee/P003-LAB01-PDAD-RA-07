@@ -84,10 +84,10 @@ amostra_paranoa_mor |>
 
 # conferindo totais, todo tem que dar: 55551
 
-sum(sexo$total)
-sum(idade$total)
-sum(raca.cor$total)
- 
+#sum(sexo$total)
+#sum(idade$total)
+#sum(raca.cor$total)
+
 ## Composição domiciliar -------------------------------------------------------
 
 # Filtrando só domicilios paranoá (5307)
@@ -140,7 +140,7 @@ amostra_paranoa_dom |>
   )
 
 # Moradores de 0 a 12 anos ----
-  
+
 amostra_paranoa_dom |>
   group_by(A01ncriancas) |>
   summarise(total = survey_total(vartype = "cv"),
@@ -195,7 +195,7 @@ amostra_paranoa_mor |>
     pct      = paste0(round(pct * 100, digits = 2), "%"),
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
-  
+
 # Frequenta instituição de ensino ----
 
 amostra_paranoa_mor |> 
@@ -244,7 +244,7 @@ amostra_paranoa_mor |>
     pct      = paste0(round(pct * 100, digits = 2), "%"),
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
- 
+
 ## Mercado de trabalho ---------------------------------------------------------
 
 # Trabalhou nos últimos 30 dias?
@@ -362,5 +362,64 @@ amostra_paranoa_mor |>
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
 
+## Rendimento ------------------------------------------------------------------
+
+# Resultado estranho
+amostra_mor |> 
+  filter(A01uf == 53,
+         localidade == 5307) |> 
+  mutate(
+    localidade = factor(
+      case_when(
+        localidade == 5307 ~ "paranoá"
+      )
+    )
+  ) |> 
+  group_by(localidade) |> 
+  summarise(
+    media   = survey_mean(renda_ind_r, vartype = "cv", na.rm = TRUE),
+    mediana = survey_median(renda_ind_r, vartype = "cv", na.rm = TRUE)
+  ) |> 
+  mutate(
+    media      = round(media, digits = 2),
+    media_cv   = paste0(round(media_cv * 100, digits = 2), "%"),
+    mediana    = round(mediana, digits = 2),
+    mediana_cv = paste0(round(mediana_cv * 100, digits = 2), "%")
+  )
 
 
+# Verificando a distribuição de renda para entender a diferença gritante da média e mediana
+
+dis.renda <- amostra_paranoa_mor |> 
+  mutate(
+    faixa_renda = cut(
+      renda_ind_r,
+      breaks = c(0, 500, 1000, 2000, 3000, 5000, Inf),
+      labels = c(
+        "Até 500",
+        "500 a 1.000",
+        "1.000 a 2.000",
+        "2.000 a 3.000",
+        "3.000 a 5.000",
+        "Acima de 5.000"
+      ),
+      right = FALSE
+    )
+  ) |> 
+  group_by(faixa_renda) |> 
+  summarise(
+    total = survey_total(vartype = c("cv", "ci"), na.rm = TRUE)
+  )
+
+# Visulaizando a distribuição de renda
+dis.renda |> 
+  ggplot(aes(x = faixa_renda, y = total)) +
+  geom_col(fill = "#FF4F00") +
+  geom_errorbar(aes(ymin = total_low, ymax = total_upp), width = 0.2) +
+  labs(
+    title = "Distribuição da renda no Paranoá",
+    x = "Faixa de renda (R$)",
+    y = "População estimada",
+    caption = "Fonte: PDAD-A 2024"
+  ) +
+  theme_minimal()
