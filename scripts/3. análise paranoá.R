@@ -247,7 +247,7 @@ amostra_paranoa_mor |>
 
 ## MERCADO DE TRABALHO ---------------------------------------------------------
 
-# Trabalhou nos últimos 30 dias?
+# Trabalhou nos últimos 30 dias? ----
 
 amostra_paranoa_mor |> 
   mutate(
@@ -1160,7 +1160,7 @@ amostra_paranoa_mor |>
 
 # Acesso domiciliar à internet ----
 
-amostra_paranoa_mor |> 
+amostra_paranoa_dom |> 
   mutate(
     dom_acesso_internet = factor(
       case_when(
