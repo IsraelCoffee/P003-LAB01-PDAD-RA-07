@@ -783,3 +783,477 @@ amostra_paranoa_dom |>
     pct      = paste0(round(pct * 100, digits = 2), "%"),
     pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
   )
+
+## SANEAMENTO BáSICO -----------------------------------------------------------
+
+# Tem acesso à Rede Geral da CAESB/ Saneago de abastecimento de água? ----
+amostra_paranoa_dom |> 
+  mutate(
+    abasteciamento_agua = factor(
+      case_when(
+        B13 == 1 ~ "Sim",
+        B13 == 2 ~ "Não",
+        B13 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(abasteciamento_agua) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+  
+# Tem acesso à Rede Geral da CAESB/Saneago de coleta de esgoto? ----
+
+amostra_paranoa_dom |> 
+  mutate(
+    coleta_esgoto = factor(
+      case_when(
+        B14 == 1 ~ "Sim",
+        B14 == 2 ~ "Não",
+        B14 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(coleta_esgoto) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Tem acesso à Rede Geral da Neoenergia/Enel de energia elétrica? ----
+
+amostra_paranoa_dom |> 
+  mutate(
+    acesso_energia = factor(
+      case_when(
+        B15 == 1 ~ "Sim",
+        B15 == 2 ~ "Não",
+        B15 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(acesso_energia) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# O caminhão do serviço público de limpeza urbana (SLU) recolhe o lixo no seu domicílio/no seu condomínio? ----
+
+amostra_paranoa_dom |> 
+  mutate(
+    recolhe_lixo = factor(
+      case_when(
+        B16 == 1 ~ "Sim",
+        B16 == 2 ~ "Não",
+        B16 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(recolhe_lixo) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+## MOBILIDADE URBANA -----------------------------------------------------------
+
+# Quantidade de automóveis ----
+
+amostra_paranoa_dom |>
+  filter(C01 == 1) |> 
+  group_by(C01_1) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Quantidade de motocicletas ----
+amostra_paranoa_dom |> 
+  filter(C02 == 1) |> 
+  group_by(C02_1) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Transporte utilizado para estudar ----
+amostra_paranoa_mor |> 
+  mutate(
+    transporte_escola = factor(
+      case_when(
+        H05_11 == 1 ~ "Ônibus",
+        H05_11 == 2 ~ "Escolar Público",
+        H05_11 == 3 ~ "Escolar Privado",
+        H05_11 == 4 ~ "Privado (empresa de aplicativo, táxi etc)",
+        H05_11 == 5 ~ "Automóvel",
+        H05_11 == 6 ~ "Metrô",
+        H05_11 == 7 ~ "Motocicleta",
+        H05_11 == 8 ~ "Bicicleta",
+        H05_11 == 9 ~ "A pé",
+        H05_11 == 10 ~ "Carroça ou cavalo",
+        H05_11 == 88888 ~ "Não sabe",
+        H05_11 == 99999 ~ "Não se aplica",
+      ),
+      levels = c(
+        "Ônibus", "Escolar Público", "Escolar Privado",
+        "Privado (empresa de aplicativo, táxi etc)", "Automóvel", "Metrô",
+        "Motocicleta", "Bicicleta", "A pé", "Carroça ou cavalo", "Não sabe",
+        "Não se aplica"
+      )
+    )) |> 
+  group_by(transporte_escola) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Transporte utilizado para trabalhar ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    transporte_trabalhar = factor(
+      case_when(
+        I09_9 == 1 ~ "Ônibus",
+        I09_9 == 2 ~ "Automóvel",
+        I09_9 == 3 ~ "Transporte Privado (empresa de aplicativo, táxi, fornecido pela empresa)",
+        I09_9 == 4 ~ "Metrô",
+        I09_9 == 5 ~ "Motocicleta",
+        I09_9 == 6 ~ "Bicicleta",
+        I09_9 == 7 ~ "A pé",
+        I09_9 == 8 ~ "Carroça ou cavalo",
+        I09_9 == 88888 ~ "Não sabe",
+        I09_9 == 99999 ~ "Não se aplica",
+      ),
+      levels = c(
+        "Ônibus", "Automóvel",
+        "Transporte Privado (empresa de aplicativo, táxi, fornecido pela empresa)",
+        "Metrô", "Motocicleta", "Bicicleta", "A pé", "Carroça ou cavalo", 
+        "Não sabe", "Não se aplica"
+      )
+    )) |> 
+  group_by(transporte_trabalhar) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Tempo de deslocamento para o trabalho ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    tempo_serviço = factor(
+      case_when(
+        I10 == 1 ~ "Até 15 minutos",
+        I10 == 2 ~ "Acima de 15 minutos até 30 minutos",
+        I10 == 3 ~ "Acima de 30 minutos até 45 minutos",
+        I10 == 4 ~ "Acima de 45 minutos até 1 hora",
+        I10 == 5 ~ "Acima de 1 hora até 1 hora e 15 minutos",
+        I10 == 6 ~ "Acima de 1 hora e 15 minutos até 1 hora e 30 minutos",
+        I10 == 7 ~ "Acima de 1 hora e 30 minutos até 1 hora e 45 minutos",
+        I10 == 8 ~ "Acima de 1 hora e 45 minutos até 2 horas",
+        I10 == 9 ~ "Acima de 2 horas",
+        I10 == 88888 ~ "Não sabe",
+        I10 == 99999 ~ "Não se aplica"
+      ),
+      levels = c(
+        "Até 15 minutos",
+        "Acima de 15 minutos até 30 minutos",
+        "Acima de 30 minutos até 45 minutos",
+        "Acima de 45 minutos até 1 hora",
+        "Acima de 1 hora até 1 hora e 15 minutos",
+        "Acima de 1 hora e 15 minutos até 1 hora e 30 minutos",
+        "Acima de 1 hora e 30 minutos até 1 hora e 45 minutos",
+        "Acima de 1 hora e 45 minutos até 2 horas",
+        "Acima de 2 horas",
+        "Não sabe",
+        "Não se aplica"
+      )
+    )) |> 
+  group_by(tempo_serviço) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+## ACESSO A SAÚDE --------------------------------------------------------------
+
+# Atendimento em saúde ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    saude_aten = factor(
+      case_when(
+        G01 == 1 ~ "Sim",
+        G01 == 2 ~ "Não",
+        G01 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(saude_aten) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Localidade procurada para atendimento ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    local_procurado = factor(
+      case_when(
+        G04 == 0     ~ "Na Região Administrativa",
+        G04 == 40    ~ "No município",
+        G04 == 1     ~ "Plano Piloto",
+        G04 == 2     ~ "Gama",
+        G04 == 3     ~ "Taguatinga",
+        G04 == 4     ~ "Brazlândia",
+        G04 == 5     ~ "Sobradinho",
+        G04 == 6     ~ "Planaltina",
+        G04 == 7     ~ "Paranoá",
+        G04 == 8     ~ "Núcleo Bandeirante",
+        G04 == 9     ~ "Ceilândia",
+        G04 == 10    ~ "Guará",
+        G04 == 11    ~ "Cruzeiro",
+        G04 == 12    ~ "Samambaia",
+        G04 == 13    ~ "Santa Maria",
+        G04 == 14    ~ "São Sebastião",
+        G04 == 15    ~ "Recanto das Emas",
+        G04 == 16    ~ "Lago Sul",
+        G04 == 17    ~ "Riacho Fundo",
+        G04 == 18    ~ "Lago Norte",
+        G04 == 19    ~ "Candangolândia",
+        G04 == 20    ~ "Águas Claras",
+        G04 == 21    ~ "Riacho Fundo II",
+        G04 == 22    ~ "Sudoeste e Octogonal",
+        G04 == 23    ~ "Varjão",
+        G04 == 24    ~ "Park Way",
+        G04 == 25    ~ "SCIA",
+        G04 == 26    ~ "Sobradinho II",
+        G04 == 27    ~ "Jardim Botânico",
+        G04 == 28    ~ "Itapoã",
+        G04 == 29    ~ "SIA",
+        G04 == 30    ~ "Vicente Pires",
+        G04 == 31    ~ "Fercal",
+        G04 == 32    ~ "Sol Nascente / Pôr do Sol",
+        G04 == 33    ~ "Arniqueira",
+        G04 == 34    ~ "Arapoanga",
+        G04 == 35    ~ "Água Quente",
+        G04 == 41    ~ "Águas Lindas de Goiás",
+        G04 == 42    ~ "Alexânia",
+        G04 == 43    ~ "Cidade Ocidental",
+        G04 == 44    ~ "Cristalina",
+        G04 == 45    ~ "Cocalzinho de Goiás",
+        G04 == 46    ~ "Formosa",
+        G04 == 47    ~ "Luziânia",
+        G04 == 48    ~ "Novo Gama",
+        G04 == 49    ~ "Padre Bernardo",
+        G04 == 50    ~ "Planaltina de Goiás",
+        G04 == 51    ~ "Santo Antônio do Descoberto",
+        G04 == 52    ~ "Valparaíso de Goiás",
+        G04 == 53    ~ "Outros municípios de Goiás",
+        G04 == 54    ~ "No domicílio",
+        G04 == 55    ~ "Pela internet (Telemedicina)",
+        G04 == 56    ~ "Outros locais",
+        G04 == 88888 ~ "Não sabe",
+        G04 == 99999 ~ "Não se aplica"
+      )
+    )) |> 
+  group_by(local_procurado) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Possui plano de saúde ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    plano_saude = factor(
+      case_when(
+        G05 == 1 ~ "Sim",
+        G05 == 2 ~ "Não",
+        G05 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(plano_saude) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+## ACESSO A TECNOLOGIA ---------------------------------------------------------
+
+# Acesso domiciliar à internet ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    dom_acesso_internet = factor(
+      case_when(
+        C05 == 1 ~ "Sim, próprio",
+        C05 == 2 ~ "Sim, compartilhado com outro(s) domicílio(s)",
+        C05 == 3 ~ "Não",
+        C05 == 8888 ~ "Não sabe"
+      ),
+      levels = c("Sim, próprio", "Sim, compartilhado com outro(s) domicílio(s)",
+                 "Não", "Não sabe")
+    )) |> 
+  group_by(dom_acesso_internet) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Acesso individual à internet ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    ind_acesso_internet = factor(
+      case_when(
+        F04 == 1 ~ "Sim",
+        F04 == 2 ~ "Não",
+        F04 == 88888 ~ "Não sabe"
+      ),
+      levels = c("Sim", "Não", "Não sabe")
+    )) |> 
+  group_by(ind_acesso_internet) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Acessou internet pelo computador ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    com_acesso_internet = factor(
+      case_when(
+        F05_1 == 1 ~ "Sim",
+        F05_1 == 2 ~ "Não",
+        F05_1 == 88888 ~ "Não sabe",
+        F05_1 == 99999 ~ "Não se aplica"
+      ),
+      levels = c("Sim", "Não", "Não sabe", "Não se aplica")
+    )) |> 
+  group_by(com_acesso_internet) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
+
+# Acessou internet pelo Celula/tablet ----
+
+amostra_paranoa_mor |> 
+  mutate(
+    cel_tab_acesso_internet = factor(
+      case_when(
+        F05_2 == 1 ~ "Sim",
+        F05_2 == 2 ~ "Não",
+        F05_2 == 88888 ~ "Não sabe",
+        F05_2 == 99999 ~ "Não se aplica"
+      ),
+      levels = c("Sim", "Não", "Não sabe", "Não se aplica")
+    )) |> 
+  group_by(cel_tab_acesso_internet) |> 
+  summarise(
+    total = survey_total(vartype = "cv"),
+    pct = survey_prop(vartype = "cv")
+  ) |> 
+  mutate(
+    total    = round(total),
+    total_cv = paste0(round(total_cv * 100, digits = 2), "%"),
+    pct      = paste0(round(pct * 100, digits = 2), "%"),
+    pct_cv   = paste0(round(pct_cv * 100, digits = 2), "%")
+  )
